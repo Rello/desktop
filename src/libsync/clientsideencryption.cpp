@@ -1947,7 +1947,7 @@ std::pair<QByteArray, PKey> ClientSideEncryption::generateCSR(const AccountPtr &
     };
 
     int ret = 0;
-    int nVersion = 1;
+    int nVersion = 0; // X.509 certificate requests only support version 1
 
     // 2. set version of x509 req
     auto x509_req = X509_REQ_new();
@@ -1956,6 +1956,10 @@ std::pair<QByteArray, PKey> ClientSideEncryption::generateCSR(const AccountPtr &
     });
 
     ret = X509_REQ_set_version(x509_req, nVersion);
+    if (ret != 1) {
+        qCWarning(lcCse()) << "Error setting the version on the csr";
+        return {result, std::move(keyPair)};
+    }
 
     // 3. set subject of x509 req
     auto x509_name = X509_REQ_get_subject_name(x509_req);
