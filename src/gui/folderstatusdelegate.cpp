@@ -42,7 +42,7 @@ FolderStatusDelegate::FolderStatusDelegate()
 
 QString FolderStatusDelegate::addFolderText()
 {
-    return tr("Add Folder Sync Connection");
+    return tr("Add folder sync connection");
 }
 
 // allocate each item size in listview.
@@ -183,7 +183,8 @@ void FolderStatusDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
     localPathRect.setBottom(localPathRect.top() + subFm.height());
 
     iconRect.setBottom(localPathRect.bottom());
-    iconRect.setWidth(iconRect.height());
+    // make the status icon slightly smaller so it does not dominate the row
+    iconRect.setWidth(int(iconRect.height() * 0.7));
 
     const auto nextToIcon = iconRect.right() + aliasMargin;
     aliasRect.setLeft(nextToIcon);

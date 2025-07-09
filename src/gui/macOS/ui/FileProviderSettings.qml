@@ -23,7 +23,8 @@ Page {
     title: qsTr("Virtual files settings")
 
     background: Rectangle {
-        color: palette.base
+        // Match the tab background color
+        color: palette.window
         border.width: root.showBorder ? Style.normalBorderWidth : 0
         border.color: root.palette.dark
     }
@@ -39,70 +40,89 @@ Page {
             right: parent.right
         }
 
-        EnforcedPlainTextLabel {
+        GroupBox {
             Layout.fillWidth: true
-            text: qsTr("General settings")
-            font.bold: true
+            title: qsTr("General settings")
             font.pointSize: Style.subheaderFontPtSize
-            elide: Text.ElideRight
-        }
+            style: GroupBoxStyle {
+                padding.left: 12
+                padding.top: 12
+                padding.bottom: 12
+            }
 
-        CheckBox {
-            id: vfsEnabledCheckBox
-            text: qsTr("Enable virtual files")
-            checked: root.controller.vfsEnabledForAccount(root.accountUserIdAtHost)
-            onClicked: root.controller.setVfsEnabledForAccount(root.accountUserIdAtHost, checked)
-        }
+            RowLayout {
+                spacing: Style.smallSpacing
 
-        Loader {
-            id: vfsSettingsLoader
-
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-
-            active: vfsEnabledCheckBox.checked
-            sourceComponent: ColumnLayout {
-                Rectangle {
+                CheckBox {
+                    id: vfsEnabledCheckBox
                     Layout.fillWidth: true
-                    height: Style.normalBorderWidth
-                    color: palette.dark
-                }
-
-                FileProviderSyncStatus {
-                    syncStatus: root.controller.domainSyncStatusForAccount(root.accountUserIdAtHost)
-                    onDomainSignalRequested: root.controller.signalFileProviderDomain(root.accountUserIdAtHost)
-                }
-
-                FileProviderStorageInfo {
-                    id: storageInfo
-                    localUsedStorage: root.controller.localStorageUsageGbForAccount(root.accountUserIdAtHost)
-                    remoteUsedStorage: root.controller.remoteStorageUsageGbForAccount(root.accountUserIdAtHost)
-
-                    onEvictDialogRequested: root.controller.createEvictionWindowForAccount(root.accountUserIdAtHost)
-
-                    Connections {
-                        target: root.controller
-
-                        function onLocalStorageUsageForAccountChanged(accountUserIdAtHost) {
-                            if (root.accountUserIdAtHost !== accountUserIdAtHost) {
-                                return;
-                            }
-                            storageInfo.localUsedStorage = root.controller.localStorageUsageGbForAccount(root.accountUserIdAtHost);
-                        }
-
-                        function onRemoteStorageUsageForAccountChanged(accountUserIdAtHost) {
-                            if (root.accountUserIdAtHost !== accountUserIdAtHost) {
-                                return;
-                            }
-                            storageInfo.remoteUsedStorage = root.controller.remoteStorageUsageGbForAccount(root.accountUserIdAtHost);
-                        }
-                    }
+                    text: qsTr("Enable virtual files")
+                    checked: root.controller.vfsEnabledForAccount(root.accountUserIdAtHost)
+                    onClicked: root.controller.setVfsEnabledForAccount(root.accountUserIdAtHost, checked)
                 }
 
                 CheckBox {
+                    Layout.fillWidth: true
                     text: qsTr("Allow deletion of items in Trash")
                     checked: root.controller.trashDeletionEnabledForAccount(root.accountUserIdAtHost)
                     onClicked: root.controller.setTrashDeletionEnabledForAccount(root.accountUserIdAtHost, checked)
+                }
+            }
+        }
+
+        GroupBox {
+            Layout.fillWidth: true
+            title: qsTr("Synchronization")
+            font.pointSize: Style.subheaderFontPtSize
+            style: GroupBoxStyle {
+                padding.left: 12
+                padding.top: 12
+                padding.bottom: 12
+            }
+
+            ColumnLayout {
+                Layout.margins: Style.standardSpacing
+                Loader {
+                    id: vfsSettingsLoader
+
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    active: vfsEnabledCheckBox.checked
+                    sourceComponent: ColumnLayout {
+                        FileProviderSyncStatus {
+                            syncStatus: root.controller.domainSyncStatusForAccount(root.accountUserIdAtHost)
+                            onDomainSignalRequested: root.controller.signalFileProviderDomain(root.accountUserIdAtHost)
+                        }
+
+                        Item { height: Style.standardSpacing }
+
+                        FileProviderStorageInfo {
+                            id: storageInfo
+                            localUsedStorage: root.controller.localStorageUsageGbForAccount(root.accountUserIdAtHost)
+                            remoteUsedStorage: root.controller.remoteStorageUsageGbForAccount(root.accountUserIdAtHost)
+
+                            onEvictDialogRequested: root.controller.createEvictionWindowForAccount(root.accountUserIdAtHost)
+
+                            Connections {
+                                target: root.controller
+
+                                function onLocalStorageUsageForAccountChanged(accountUserIdAtHost) {
+                                    if (root.accountUserIdAtHost !== accountUserIdAtHost) {
+                                        return;
+                                    }
+                                    storageInfo.localUsedStorage = root.controller.localStorageUsageGbForAccount(root.accountUserIdAtHost);
+                                }
+
+                                function onRemoteStorageUsageForAccountChanged(accountUserIdAtHost) {
+                                    if (root.accountUserIdAtHost !== accountUserIdAtHost) {
+                                        return;
+                                    }
+                                    storageInfo.remoteUsedStorage = root.controller.remoteStorageUsageGbForAccount(root.accountUserIdAtHost);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

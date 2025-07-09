@@ -52,6 +52,7 @@
 #include <QVariant>
 #include <QJsonDocument>
 #include <QToolTip>
+#include <QPalette>
 
 #ifdef BUILD_FILE_PROVIDER_MODULE
 #include "macOS/fileprovider.h"
@@ -191,6 +192,21 @@ AccountSettings::AccountSettings(AccountState *accountState, QWidget *parent)
     _ui->_folderList->setMinimumWidth(300);
 #endif
     new ToolTipUpdater(_ui->_folderList);
+
+    // Ensure the folder list background follows the window palette
+    QPalette listPalette = _ui->_folderList->palette();
+    listPalette.setColor(QPalette::Base, palette().window().color());
+    _ui->_folderList->setPalette(listPalette);
+    _ui->_folderList->setAutoFillBackground(true);
+    // Apply the same palette to the viewport in case the view doesn't inherit it
+    _ui->_folderList->viewport()->setPalette(listPalette);
+    _ui->_folderList->viewport()->setAutoFillBackground(true);
+
+    // Match the big folder UI background with the window palette
+    QPalette bigFolderPalette = _ui->bigFolderUi->palette();
+    bigFolderPalette.setColor(QPalette::Window, palette().window().color());
+    _ui->bigFolderUi->setPalette(bigFolderPalette);
+    _ui->bigFolderUi->setAutoFillBackground(true);
 
 #if defined(BUILD_FILE_PROVIDER_MODULE)
     if (Mac::FileProvider::fileProviderAvailable()) {
