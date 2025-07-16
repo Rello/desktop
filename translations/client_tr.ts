@@ -357,6 +357,11 @@
         <source>Allow deletion of items in Trash</source>
         <translation>Çöp kutusundaki ögeler silinebilsin</translation>
     </message>
+    <message>
+        <location filename="../src/gui/macOS/ui/FileProviderSettings.qml" line="109"/>
+        <source>Reset virtual files environment</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>FileProviderStorageInfo</name>
@@ -2796,6 +2801,11 @@ Uzman kullanıcılar için: Bu sorun, bir klasörde bulunan birden fazla eşitle
         <location filename="../src/gui/folderwizard.cpp" line="515"/>
         <source>Please choose a different location. %1 is already being synced to %2.</source>
         <translation>Lütfen farklı bir konum seçin. %1 zaten %2 ile eşitleniyor.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/folderwizard.cpp" line="505"/>
+        <source>You are already syncing the subfolder %1 at %2.</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
