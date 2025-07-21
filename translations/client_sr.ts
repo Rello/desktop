@@ -357,6 +357,11 @@
         <source>Allow deletion of items in Trash</source>
         <translation>Дозволи брисање ставки у Отпаду</translation>
     </message>
+    <message>
+        <location filename="../src/gui/macOS/ui/FileProviderSettings.qml" line="109"/>
+        <source>Reset virtual files environment</source>
+        <translation>Ресетуј окружење виртуелних фајлова</translation>
+    </message>
 </context>
 <context>
     <name>FileProviderStorageInfo</name>
@@ -2798,6 +2803,11 @@ For advanced users: this issue might be related to multiple sync database files 
         <location filename="../src/gui/folderwizard.cpp" line="515"/>
         <source>Please choose a different location. %1 is already being synced to %2.</source>
         <translation>Молимо вас да изаберете неку другу локацију. %1 се већ синхронизује на %2.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/folderwizard.cpp" line="505"/>
+        <source>You are already syncing the subfolder %1 at %2.</source>
+        <translation>Већ синхронизујете подфолдер фолдера %1 у %2.</translation>
     </message>
 </context>
 <context>

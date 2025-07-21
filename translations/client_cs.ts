@@ -357,6 +357,11 @@
         <source>Allow deletion of items in Trash</source>
         <translation>Umožnit mazání položek v Koši</translation>
     </message>
+    <message>
+        <location filename="../src/gui/macOS/ui/FileProviderSettings.qml" line="109"/>
+        <source>Reset virtual files environment</source>
+        <translation>Resetovat prostředí virtuálních souborů</translation>
+    </message>
 </context>
 <context>
     <name>FileProviderStorageInfo</name>
@@ -2796,6 +2801,11 @@ Pro pokročilé uživatele: tento problém může souviset s vícero databázov�
         <location filename="../src/gui/folderwizard.cpp" line="515"/>
         <source>Please choose a different location. %1 is already being synced to %2.</source>
         <translation>Zvolte jiné umístění. %1 už je synchronizováno do %2.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/folderwizard.cpp" line="505"/>
+        <source>You are already syncing the subfolder %1 at %2.</source>
+        <translation>Už synchronizujete podsložku %1 v %2.</translation>
     </message>
 </context>
 <context>

@@ -357,6 +357,11 @@
         <source>Allow deletion of items in Trash</source>
         <translation>Luba prügikasti sisu kustutamist</translation>
     </message>
+    <message>
+        <location filename="../src/gui/macOS/ui/FileProviderSettings.qml" line="109"/>
+        <source>Reset virtual files environment</source>
+        <translation>Lähtesta virtuaalsete failide keskkond</translation>
+    </message>
 </context>
 <context>
     <name>FileProviderStorageInfo</name>
@@ -2799,6 +2804,11 @@ Lisateave asjatundjatele: see olukord võib olla ka seotud asjaoluga, et ühes k
         <source>Please choose a different location. %1 is already being synced to %2.</source>
         <translation>Palun vali muu asukoht. „%1“ jaoks juba on %2 sünkroniseerimine kasutusel.</translation>
     </message>
+    <message>
+        <location filename="../src/gui/folderwizard.cpp" line="505"/>
+        <source>You are already syncing the subfolder %1 at %2.</source>
+        <translation>Sa juba sünkroonid „%2“ alamkasuta „%1“.</translation>
+    </message>
 </context>
 <context>
     <name>OCC::FolderWizardSelectiveSync</name>
@@ -4018,7 +4028,7 @@ Palun arvesta, et käsurealt lisatud logimistingimused on alati primaarsed nende
     <message>
         <location filename="../src/gui/owncloudsetupwizard.cpp" line="701"/>
         <source>Virtual files enabled</source>
-        <translation>Virtuaalsed faiid on kasutusel</translation>
+        <translation>Virtuaalsed failid on kasutusel</translation>
     </message>
     <message>
         <location filename="../src/gui/owncloudsetupwizard.cpp" line="702"/>

@@ -357,6 +357,11 @@
         <source>Allow deletion of items in Trash</source>
         <translation>Allow deletion of items in Trash</translation>
     </message>
+    <message>
+        <location filename="../src/gui/macOS/ui/FileProviderSettings.qml" line="109"/>
+        <source>Reset virtual files environment</source>
+        <translation>Reset virtual files environment</translation>
+    </message>
 </context>
 <context>
     <name>FileProviderStorageInfo</name>
@@ -2798,6 +2803,11 @@ For advanced users: this issue might be related to multiple sync database files 
         <location filename="../src/gui/folderwizard.cpp" line="515"/>
         <source>Please choose a different location. %1 is already being synced to %2.</source>
         <translation>Please choose a different location. %1 is already being synced to %2.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/folderwizard.cpp" line="505"/>
+        <source>You are already syncing the subfolder %1 at %2.</source>
+        <translation>You are already syncing the subfolder %1 at %2.</translation>
     </message>
 </context>
 <context>

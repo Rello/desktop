@@ -357,6 +357,11 @@
         <source>Allow deletion of items in Trash</source>
         <translation>Permitir a exclusão de itens na Lixeira</translation>
     </message>
+    <message>
+        <location filename="../src/gui/macOS/ui/FileProviderSettings.qml" line="109"/>
+        <source>Reset virtual files environment</source>
+        <translation>Redefinir o ambiente de arquivos virtuais</translation>
+    </message>
 </context>
 <context>
     <name>FileProviderStorageInfo</name>
@@ -2798,6 +2803,11 @@ Para usuários avançados: este problema pode estar relacionado a vários arquiv
         <location filename="../src/gui/folderwizard.cpp" line="515"/>
         <source>Please choose a different location. %1 is already being synced to %2.</source>
         <translation>Por favor, escolha um local diferente. %1 já está sendo sincronizada com %2.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/folderwizard.cpp" line="505"/>
+        <source>You are already syncing the subfolder %1 at %2.</source>
+        <translation>Você já está sincronizando a subpasta %1 em %2.</translation>
     </message>
 </context>
 <context>

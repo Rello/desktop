@@ -357,6 +357,11 @@
         <source>Allow deletion of items in Trash</source>
         <translation>Tillåt borttagning av objekt i papperskorgen</translation>
     </message>
+    <message>
+        <location filename="../src/gui/macOS/ui/FileProviderSettings.qml" line="109"/>
+        <source>Reset virtual files environment</source>
+        <translation>Återställ miljön för virtuella filer</translation>
+    </message>
 </context>
 <context>
     <name>FileProviderStorageInfo</name>
@@ -2798,6 +2803,11 @@ För avancerade användare: det här problemet kan vara relaterat till flera syn
         <location filename="../src/gui/folderwizard.cpp" line="515"/>
         <source>Please choose a different location. %1 is already being synced to %2.</source>
         <translation>Välj en annan plats. %1 synkroniseras redan till %2.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/folderwizard.cpp" line="505"/>
+        <source>You are already syncing the subfolder %1 at %2.</source>
+        <translation>Du synkroniserar redan undermappen %1 på %2.</translation>
     </message>
 </context>
 <context>
