@@ -17,12 +17,16 @@ ColumnLayout {
     id: rootLayout
     spacing: Style.standardSpacing * 2
     property NC.UserStatusSelectorModel userStatusSelectorModel
+    property bool showOnlineStatusSection: true
+    property bool showStatusMessageSection: true
 
     ColumnLayout {
         id: statusButtonsLayout
 
         Layout.fillWidth: true
         spacing: Style.smallSpacing
+        visible: rootLayout.showOnlineStatusSection
+        Layout.preferredHeight: visible ? implicitHeight : 0
 
         EnforcedPlainTextLabel {
             Layout.fillWidth: true
@@ -32,17 +36,11 @@ ColumnLayout {
             text: qsTr("Online status")
         }
 
-        GridLayout {
+        ColumnLayout {
             id: topButtonsLayout
-            columns: 2
-            rows: 2
-            columnSpacing: statusButtonsLayout.spacing
-            rowSpacing: statusButtonsLayout.spacing
 
-            property int maxButtonHeight: 0
-            function updateMaxButtonHeight(newHeight) {
-                maxButtonHeight = Math.max(maxButtonHeight, newHeight)
-            }
+            Layout.fillWidth: true
+            spacing: statusButtonsLayout.spacing
 
             UserStatusSelectorButton {
                 checked: userStatusSelectorModel.onlineStatus === NC.UserStatus.Online
@@ -53,7 +51,6 @@ ColumnLayout {
                 onClicked: userStatusSelectorModel.onlineStatus = NC.UserStatus.Online
 
                 Layout.fillWidth: true
-                implicitWidth: 200 // Pretty much a hack to ensure all the buttons are equal in width
             }
             UserStatusSelectorButton {
                 checked: userStatusSelectorModel.onlineStatus === NC.UserStatus.Away
@@ -64,7 +61,6 @@ ColumnLayout {
                 onClicked: userStatusSelectorModel.onlineStatus = NC.UserStatus.Away
 
                 Layout.fillWidth: true
-                implicitWidth: 200 // Pretty much a hack to ensure all the buttons are equal in width
 
             }
             UserStatusSelectorButton {
@@ -92,10 +88,6 @@ ColumnLayout {
                 onClicked: userStatusSelectorModel.onlineStatus = NC.UserStatus.DoNotDisturb
 
                 Layout.fillWidth: true
-                implicitWidth: 200 // Pretty much a hack to ensure all the buttons are equal in width
-                Layout.preferredHeight: topButtonsLayout.maxButtonHeight
-                onImplicitHeightChanged: topButtonsLayout.updateMaxButtonHeight(implicitHeight)
-                Component.onCompleted: topButtonsLayout.updateMaxButtonHeight(implicitHeight)
             }
             UserStatusSelectorButton {
                 checked: userStatusSelectorModel.onlineStatus === NC.UserStatus.Invisible ||
@@ -108,10 +100,6 @@ ColumnLayout {
                 onClicked: userStatusSelectorModel.onlineStatus = NC.UserStatus.Invisible
 
                 Layout.fillWidth: true
-                implicitWidth: 200 // Pretty much a hack to ensure all the buttons are equal in width
-                Layout.preferredHeight: topButtonsLayout.maxButtonHeight
-                onImplicitHeightChanged: topButtonsLayout.updateMaxButtonHeight(implicitHeight)
-                Component.onCompleted: topButtonsLayout.updateMaxButtonHeight(implicitHeight)
             }
         }
     }
@@ -122,6 +110,8 @@ ColumnLayout {
         Layout.fillWidth: true
         Layout.fillHeight: true
         spacing: Style.smallSpacing
+        visible: rootLayout.showStatusMessageSection
+        Layout.preferredHeight: visible ? implicitHeight : 0
 
         EnforcedPlainTextLabel {
             Layout.fillWidth: true
@@ -281,6 +271,8 @@ ColumnLayout {
         id: bottomButtonBox
         Layout.fillWidth: true
         Layout.alignment: Qt.AlignBottom
+        visible: rootLayout.showStatusMessageSection
+        Layout.preferredHeight: visible ? implicitHeight : 0
 
         Button {
             text: qsTr("Cancel")
