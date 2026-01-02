@@ -83,6 +83,7 @@ private:
     QHash<Account *, QAction *> _actionForAccount;
 
     QToolBar *_toolBar;
+    QAction *_accountsSeparator = nullptr;
 
     ownCloudGui *_gui;
 };
