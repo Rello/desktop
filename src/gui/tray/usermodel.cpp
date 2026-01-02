@@ -23,6 +23,7 @@
 #include "tray/unifiedsearchresultslistmodel.h"
 #include "tray/talkreply.h"
 #include "userstatusconnector.h"
+#include "theme.h"
 
 #include <QtCore>
 #include <QDesktopServices>
@@ -88,10 +89,18 @@ User::User(AccountStatePtr &account, const bool &isCurrent, QObject *parent)
     connect(_account->account().data(), &Account::rootFolderQuotaChanged, this, &User::slotQuotaChanged);
 
     connect(FolderMan::instance(), &FolderMan::folderListChanged, this, &User::hasLocalFolderChanged);
+    connect(FolderMan::instance(), &FolderMan::folderListChanged, this, &User::updateSyncStatus);
+    connect(FolderMan::instance(), &FolderMan::folderSyncStateChange, this, [this](const Folder *folder) {
+        if (!folder || folder->accountState() != _account.data()) {
+            return;
+        }
+        updateSyncStatus();
+    });
 
     connect(_account->account().data(), &Account::accountChangedAvatar, this, &User::avatarChanged);
     connect(_account->account().data(), &Account::userStatusChanged, this, &User::statusChanged);
     connect(_account.data(), &AccountState::desktopNotificationsAllowedChanged, this, &User::desktopNotificationsAllowedChanged);
+    connect(_account.data(), &AccountState::stateChanged, this, &User::updateSyncStatus);
 
     connect(_account->account().data(), &Account::capabilitiesChanged, this, &User::headerColorChanged);
     connect(_account->account().data(), &Account::capabilitiesChanged, this, &User::headerTextColorChanged);
@@ -121,6 +130,8 @@ User::User(AccountStatePtr &account, const bool &isCurrent, QObject *parent)
             showDesktopNotification(certificateNeedMigration);
         }
     });
+
+    updateSyncStatus();
 }
 
 void User::checkNotifiedNotifications()
@@ -893,6 +904,74 @@ bool User::isPublicShareLink() const
     return _account->account()->isPublicShareLink();
 }
 
+void User::updateSyncStatus()
+{
+    if (!hasLocalFolder()) {
+        setSyncStatusIssue(false, {});
+        return;
+    }
+
+    QList<Folder *> folders;
+    const auto &folderMap = FolderMan::instance()->map();
+    for (auto it = folderMap.cbegin(); it != folderMap.cend(); ++it) {
+        if (it.value()->accountState() == _account.data()) {
+            folders.append(it.value());
+        }
+    }
+
+    if (folders.isEmpty()) {
+        setSyncStatusIssue(false, {});
+        return;
+    }
+
+    SyncResult::Status status = SyncResult::Success;
+    bool unresolvedConflicts = false;
+    ProgressInfo *progressInfo = nullptr;
+    FolderMan::trayOverallStatus(folders, &status, &unresolvedConflicts, &progressInfo);
+    Q_UNUSED(progressInfo);
+
+    bool hasIssue = false;
+    QUrl icon;
+
+    switch (status) {
+    case SyncResult::Error:
+    case SyncResult::SetupError:
+        hasIssue = true;
+        icon = Theme::instance()->syncStatusError();
+        break;
+    case SyncResult::Problem:
+    case SyncResult::Undefined:
+        hasIssue = true;
+        icon = Theme::instance()->syncStatusWarning();
+        break;
+    case SyncResult::Success:
+    case SyncResult::SyncPrepare:
+    case SyncResult::SyncRunning:
+    case SyncResult::NotYetStarted:
+    case SyncResult::Paused:
+    case SyncResult::SyncAbortRequested:
+        break;
+    }
+
+    if (!hasIssue && unresolvedConflicts) {
+        hasIssue = true;
+        icon = Theme::instance()->syncStatusWarning();
+    }
+
+    setSyncStatusIssue(hasIssue, icon);
+}
+
+void User::setSyncStatusIssue(const bool hasIssue, const QUrl &icon)
+{
+    if (_hasSyncStatusIssue == hasIssue && _syncStatusIcon == icon) {
+        return;
+    }
+
+    _hasSyncStatusIssue = hasIssue;
+    _syncStatusIcon = icon;
+    emit syncStatusChanged();
+}
+
 void User::slotItemCompleted(const QString &folder, const SyncFileItemPtr &item)
 {
     auto folderInstance = FolderMan::instance()->folder(folder);
@@ -1038,6 +1117,16 @@ QUrl User::statusIcon() const
 QString User::statusEmoji() const
 {
     return _account->account()->userStatusConnector()->userStatus().icon();
+}
+
+bool User::hasSyncStatusIssue() const
+{
+    return _hasSyncStatusIssue;
+}
+
+QUrl User::syncStatusIcon() const
+{
+    return _syncStatusIcon;
 }
 
 bool User::serverHasUserStatus() const
@@ -1435,6 +1524,11 @@ void UserModel::addUser(AccountStatePtr &user, const bool &isCurrent)
                                                             UserModel::StatusEmojiRole,
                                                             UserModel::StatusMessageRole});
         });
+
+        connect(u, &User::syncStatusChanged, this, [this, row] {
+            emit dataChanged(index(row, 0), index(row, 0), {UserModel::HasSyncStatusIssueRole,
+                                                            UserModel::SyncStatusIconRole});
+        });
         
         connect(u, &User::desktopNotificationsAllowedChanged, this, [this, row] {
             emit dataChanged(index(row, 0), index(row, 0), { UserModel::DesktopNotificationsAllowedRole });
@@ -1640,6 +1734,12 @@ QVariant UserModel::data(const QModelIndex &index, int role) const
     case StatusMessageRole:
         result = _users[index.row()]->statusMessage();
         break;
+    case HasSyncStatusIssueRole:
+        result = _users[index.row()]->hasSyncStatusIssue();
+        break;
+    case SyncStatusIconRole:
+        result = _users[index.row()]->syncStatusIcon();
+        break;
     case DesktopNotificationsAllowedRole:
         result = _users[index.row()]->isDesktopNotificationsAllowed();
         break;
@@ -1676,6 +1776,8 @@ QHash<int, QByteArray> UserModel::roleNames() const
     roles[StatusIconRole] = "statusIcon";
     roles[StatusEmojiRole] = "statusEmoji";
     roles[StatusMessageRole] = "statusMessage";
+    roles[HasSyncStatusIssueRole] = "hasSyncStatusIssue";
+    roles[SyncStatusIconRole] = "syncStatusIcon";
     roles[DesktopNotificationsAllowedRole] = "desktopNotificationsAllowed";
     roles[AvatarRole] = "avatar";
     roles[IsCurrentUserRole] = "isCurrentUser";
@@ -1903,4 +2005,3 @@ QHash<int, QByteArray> UserAppsModel::roleNames() const
     return roles;
 }
 }
-

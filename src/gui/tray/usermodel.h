@@ -61,6 +61,8 @@ class User : public QObject
     Q_PROPERTY(QUrl statusIcon READ statusIcon NOTIFY statusChanged)
     Q_PROPERTY(QString statusEmoji READ statusEmoji NOTIFY statusChanged)
     Q_PROPERTY(QString statusMessage READ statusMessage NOTIFY statusChanged)
+    Q_PROPERTY(bool hasSyncStatusIssue READ hasSyncStatusIssue NOTIFY syncStatusChanged)
+    Q_PROPERTY(QUrl syncStatusIcon READ syncStatusIcon NOTIFY syncStatusChanged)
     Q_PROPERTY(bool desktopNotificationsAllowed READ isDesktopNotificationsAllowed NOTIFY desktopNotificationsAllowedChanged)
     Q_PROPERTY(bool hasLocalFolder READ hasLocalFolder NOTIFY hasLocalFolderChanged)
     Q_PROPERTY(bool isFeaturedAppEnabled READ isFeaturedAppEnabled NOTIFY featuredAppChanged)
@@ -112,6 +114,8 @@ public:
     [[nodiscard]] QString statusMessage() const;
     [[nodiscard]] QUrl statusIcon() const;
     [[nodiscard]] QString statusEmoji() const;
+    [[nodiscard]] bool hasSyncStatusIssue() const;
+    [[nodiscard]] QUrl syncStatusIcon() const;
     void processCompletedSyncItem(const Folder *folder, const SyncFileItemPtr &item);
     [[nodiscard]] const QVariantList &groupFolders() const;
     [[nodiscard]] bool canLogout() const;
@@ -124,6 +128,7 @@ signals:
     void avatarChanged();
     void accountStateChanged();
     void statusChanged();
+    void syncStatusChanged();
     void desktopNotificationsAllowedChanged();
     void headerColorChanged();
     void headerTextColorChanged();
@@ -177,6 +182,8 @@ private:
     void parseNewGroupFolderPath(const QString &path);
     void connectPushNotifications() const;
     [[nodiscard]] bool checkPushNotificationsAreReady() const;
+    void updateSyncStatus();
+    void setSyncStatusIssue(const bool hasIssue, const QUrl &icon);
 
     bool isActivityOfCurrentAccount(const Folder *folder) const;
     [[nodiscard]] bool isUnsolvableConflict(const SyncFileItemPtr &item) const;
@@ -213,6 +220,9 @@ private:
     // used for quota warnings
     int _lastQuotaPercent = 0;
     Activity _lastQuotaActivity;
+
+    bool _hasSyncStatusIssue = false;
+    QUrl _syncStatusIcon;
 };
 
 class UserModel : public QAbstractListModel
@@ -255,6 +265,8 @@ public:
         StatusIconRole,
         StatusEmojiRole,
         StatusMessageRole,
+        HasSyncStatusIssueRole,
+        SyncStatusIconRole,
         DesktopNotificationsAllowedRole,
         AvatarRole,
         IsCurrentUserRole,
