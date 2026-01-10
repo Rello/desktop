@@ -61,6 +61,31 @@ AbstractButton {
                 Accessible.role: Accessible.Indicator
                 Accessible.name: model.desktopNotificationsAllowed ? qsTr("Current account status is online") : qsTr("Current account status is do not disturb")
             }
+
+            Rectangle {
+                id: accountSyncStatusIndicatorBackground
+                visible: model.hasSyncStatusIssue
+                width: accountSyncStatusIndicator.sourceSize.width + Style.trayFolderStatusIndicatorSizeOffset
+                height: width
+                color: "white"
+                anchors.top: accountAvatar.top
+                anchors.right: accountAvatar.right
+                radius: width * Style.trayFolderStatusIndicatorRadiusFactor
+            }
+
+            Image {
+                id: accountSyncStatusIndicator
+                visible: model.hasSyncStatusIssue
+                source: model.syncStatusIcon
+                cache: false
+                x: accountSyncStatusIndicatorBackground.x + Style.trayFolderStatusIndicatorSizeOffset / 2
+                y: accountSyncStatusIndicatorBackground.y + Style.trayFolderStatusIndicatorSizeOffset / 2
+                sourceSize.width: Style.accountAvatarStateIndicatorSize
+                sourceSize.height: Style.accountAvatarStateIndicatorSize
+
+                Accessible.role: Accessible.Indicator
+                Accessible.name: qsTr("Account sync status has issues")
+            }
         }
 
         ColumnLayout {

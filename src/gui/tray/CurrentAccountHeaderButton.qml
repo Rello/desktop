@@ -273,6 +273,31 @@ Button {
                 Accessible.role: Accessible.Indicator
                 Accessible.name: UserModel.desktopNotificationsAllowed ? qsTr("Current account status is online") : qsTr("Current account status is do not disturb")
             }
+
+            Rectangle {
+                id: currentAccountSyncStatusIndicatorBackground
+                visible: UserModel.currentUser && UserModel.currentUser.hasSyncStatusIssue
+                width: currentAccountSyncStatusIndicator.sourceSize.width + Style.trayFolderStatusIndicatorSizeOffset
+                height: width
+                color: "white"
+                anchors.top: currentAccountAvatar.top
+                anchors.right: currentAccountAvatar.right
+                radius: width * Style.trayFolderStatusIndicatorRadiusFactor
+            }
+
+            Image {
+                id: currentAccountSyncStatusIndicator
+                visible: UserModel.currentUser && UserModel.currentUser.hasSyncStatusIssue
+                source: UserModel.currentUser ? UserModel.currentUser.syncStatusIcon : ""
+                cache: false
+                x: currentAccountSyncStatusIndicatorBackground.x + Style.trayFolderStatusIndicatorSizeOffset / 2
+                y: currentAccountSyncStatusIndicatorBackground.y + Style.trayFolderStatusIndicatorSizeOffset / 2
+                sourceSize.width: Style.accountAvatarStateIndicatorSize
+                sourceSize.height: Style.accountAvatarStateIndicatorSize
+
+                Accessible.role: Accessible.Indicator
+                Accessible.name: qsTr("Account sync status has issues")
+            }
         }
 
         Column {
