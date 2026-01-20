@@ -23,9 +23,9 @@ Page {
     title: qsTr("Virtual files settings")
 
     background: Rectangle {
-        color: palette.base
+        color: palette.alternateBase
         border.width: root.showBorder ? Style.normalBorderWidth : 0
-        border.color: root.palette.dark
+        border.color: palette.mid
     }
 
     padding: Style.standardSpacing
@@ -39,25 +39,35 @@ Page {
             right: parent.right
         }
 
-        EnforcedPlainTextLabel {
+        RowLayout {
             Layout.fillWidth: true
-            text: qsTr("General settings")
-            font.bold: true
-            font.pointSize: Style.subheaderFontPtSize
-            elide: Text.ElideRight
+
+            EnforcedPlainTextLabel {
+                Layout.fillWidth: true
+                text: qsTr("Enable virtual files")
+                elide: Text.ElideRight
+            }
+
+            Switch {
+                id: vfsEnabledCheckBox
+                checked: root.controller.vfsEnabledForAccount(root.accountUserIdAtHost)
+                onClicked: root.controller.setVfsEnabledForAccount(root.accountUserIdAtHost, checked)
+            }
         }
 
-        CheckBox {
-            id: vfsEnabledCheckBox
-            text: qsTr("Enable virtual files")
-            checked: root.controller.vfsEnabledForAccount(root.accountUserIdAtHost)
-            onClicked: root.controller.setVfsEnabledForAccount(root.accountUserIdAtHost, checked)
-        }
-        
-        CheckBox {
-            text: qsTr("Allow deletion of items in Trash")
-            checked: root.controller.trashDeletionEnabledForAccount(root.accountUserIdAtHost)
-            onClicked: root.controller.setTrashDeletionEnabledForAccount(root.accountUserIdAtHost, checked)
+        RowLayout {
+            Layout.fillWidth: true
+
+            EnforcedPlainTextLabel {
+                Layout.fillWidth: true
+                text: qsTr("Allow deletion of items in Trash")
+                elide: Text.ElideRight
+            }
+
+            Switch {
+                checked: root.controller.trashDeletionEnabledForAccount(root.accountUserIdAtHost)
+                onClicked: root.controller.setTrashDeletionEnabledForAccount(root.accountUserIdAtHost, checked)
+            }
         }
     }
 }
