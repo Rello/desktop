@@ -44,7 +44,8 @@ const QString TOOLBAR_CSS()
     return QStringLiteral("QToolBar { background: transparent; margin: 0; padding: 0; border: none; spacing: 0; } "
                           "QToolBar QToolButton { background: transparent; border: none; margin: 0; padding: 8px 12px; font-size: 14px; } "
                           "QToolBar QToolBarExtension { padding:0; } "
-                          "QToolBar QToolButton:checked { background: #0a84ff; color: #ffffff; border-radius: 8px; margin: 0; padding: 6px 12px; }");
+                          "QToolBar QToolButton:checked { background: #0a84ff; color: #ffffff; border-radius: 8px; margin: 0; padding: 8px 12px; } "
+                          "QToolBar QToolButton:hover:!checked { background: rgba(0, 0, 0, 0.05); border-radius: 8px; }");
 }
 
 const float buttonSizeRatio = 1.618f; // golden ratio
@@ -109,7 +110,8 @@ SettingsDialog::SettingsDialog(ownCloudGui *gui, QWidget *parent)
     navigationScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     navigationScroll->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     navigationScroll->setWidget(navigationContainer);
-    navigationScroll->viewport()->setAutoFillBackground(false);
+    navigationScroll->viewport()->setObjectName("settings_navigation_viewport");
+    navigationScroll->viewport()->setStyleSheet("background: transparent;");
     auto *contentScroll = new QScrollArea(shellContainer);
     contentScroll->setObjectName(QLatin1String("settings_content_scroll"));
     contentScroll->setWidgetResizable(true);
@@ -406,8 +408,8 @@ void SettingsDialog::customizeStyle()
 
         /* Navigation */
         "#settings_navigation_scroll { background: transparent; border-radius: 12px; }"
-        "#settings_navigation_scroll > QWidget { background: palette(alternate-base); border-radius: 12px; }"
-        "#settings_navigation { background: transparent; border-radius: 12px; padding: 4px; }"
+        "#settings_navigation_viewport { background: transparent; border-radius: 12px; }"
+        "#settings_navigation { background: palette(alternate-base); border-radius: 12px; padding: 4px; }"
 
         /* Content area */
         "#settings_content_scroll { background: transparent; border-radius: 12px; }"

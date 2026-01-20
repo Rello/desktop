@@ -179,7 +179,7 @@ AccountSettings::AccountSettings(AccountState *accountState, QWidget *parent)
         applyEncryptionMessageButtonStyle();
         applyEncryptionMessageFrameStyle();
     });
-
+    
     _model->setAccountState(_accountState);
     _model->setParent(this);
     const auto delegate = new FolderStatusDelegate;
@@ -196,7 +196,7 @@ AccountSettings::AccountSettings(AccountState *accountState, QWidget *parent)
     _ui->fileProviderTab->setAttribute(Qt::WA_StyledBackground, true);
     _ui->connectionSettingsTab->setAutoFillBackground(true);
     _ui->connectionSettingsTab->setAttribute(Qt::WA_StyledBackground, true);
-
+    
     // Connect styleChanged events to our widgets, so they can adapt (Dark-/Light-Mode switching)
     connect(this, &AccountSettings::styleChanged, delegate, &FolderStatusDelegate::slotStyleChanged);
 
