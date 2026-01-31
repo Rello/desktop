@@ -12,6 +12,22 @@
 #include "configfile.h"
 #include "updater/sparkleupdater.h"
 
+namespace {
+bool automaticUpdateChecksAllowed()
+{
+    if (!OCC::SparkleUpdater::autoUpdaterAllowed()) {
+        return false;
+    }
+
+    if (!OCC::ConfigFile().autoUpdateCheck()) {
+        qCInfo(OCC::lcUpdater) << "Auto update checks are disabled in config, won't check for updates.";
+        return false;
+    }
+
+    return true;
+}
+}
+
 @class NCSparkleUpdaterDelegate;
 
 class Q_DECL_HIDDEN OCC::SparkleUpdater::SparkleInterface
@@ -65,7 +81,7 @@ private:
 
 - (BOOL)backgroundUpdateChecksAllowed
 {
-    const BOOL allowUpdateCheck = OCC::ConfigFile().skipUpdateCheck() ? NO : YES;
+    const BOOL allowUpdateCheck = automaticUpdateChecksAllowed() ? YES : NO;
     qCInfo(OCC::lcUpdater) << "Updater may check for updates:" << (allowUpdateCheck ? "YES" : "NO");
     return allowUpdateCheck;
 }
@@ -73,6 +89,12 @@ private:
 - (BOOL)updater:(nonnull SPUUpdater *)updater mayPerformUpdateCheck:(SPUUpdateCheck)updateCheck error:(NSError **)error
 {
     Q_UNUSED(updater)
+    Q_UNUSED(error)
+    if (updateCheck == SPUUpdateCheckUserInitiated) {
+        const BOOL allowUpdateCheck = OCC::ConfigFile().skipUpdateCheck() ? NO : YES;
+        qCInfo(OCC::lcUpdater) << "Updater may check for updates (manual):" << (allowUpdateCheck ? "YES" : "NO");
+        return allowUpdateCheck;
+    }
     Q_UNUSED(updateCheck)
     return [self backgroundUpdateChecksAllowed];
 }
@@ -239,7 +261,7 @@ SparkleUpdater::SparkleUpdater(const QUrl& appCastUrl)
     , _interface(std::make_unique<SparkleInterface>(this))
 {
     _interface->delegate = [[NCSparkleUpdaterDelegate alloc] initWithOwner:_interface.get()];
-    const BOOL startUpdater = autoUpdaterAllowed() ? YES : NO;
+    const BOOL startUpdater = automaticUpdateChecksAllowed() ? YES : NO;
     _interface->updaterController =
         [[SPUStandardUpdaterController alloc] initWithStartingUpdater:startUpdater 
                                                       updaterDelegate:_interface->delegate
@@ -288,7 +310,7 @@ void SparkleUpdater::checkForUpdate()
 
 void SparkleUpdater::backgroundCheckForUpdate()
 {
-    if (autoUpdaterAllowed() && !ConfigFile().skipUpdateCheck()) {
+    if (automaticUpdateChecksAllowed()) {
         qCInfo(OCC::lcUpdater) << "launching background check";
         [_interface->updaterController.updater checkForUpdatesInBackground];
     } else {
