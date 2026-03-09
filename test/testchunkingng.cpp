@@ -151,6 +151,8 @@ private slots:
         QVERIFY(destinationHeader.contains("SQ-0.5%25BF-150"));
         QVERIFY(destinationHeader.contains("/A/SQ-0.5%25BF-150/"));
         QVERIFY(!destinationHeader.contains("%2F"));
+        QVERIFY(destinationHeader.startsWith("/remote.php/dav/files/"));
+        QVERIFY(!destinationHeader.contains("https%3A"));
     }
 
     // Test resuming when there's a confusing chunk added

@@ -79,9 +79,10 @@ QUrl PropagateUploadFileNG::chunkUrl(const int chunk) const
 
 QByteArray PropagateUploadFileNG::destinationHeader() const
 {
-    const auto davUrl = Utility::trailingSlashPath(propagator()->account()->davUrl().toString());
-    const auto remotePath = Utility::noLeadingSlashPath(propagator()->fullRemotePath(_fileToUpload._file));
-    const auto destination = QString(davUrl + remotePath);
+    // Keep this as an absolute DAV path (without scheme/host) so servers/proxies validating
+    // against the DAV base URI do not reject chunked uploads. Still percent-encode to preserve
+    // literal '%' in remote paths (e.g. "foo%BF") as "%25".
+    const auto destination = QDir::cleanPath(propagator()->account()->davUrl().path() + propagator()->fullRemotePath(_fileToUpload._file));
     return QUrl::toPercentEncoding(destination, "/");
 }
 
